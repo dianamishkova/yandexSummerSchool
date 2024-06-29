@@ -7,14 +7,22 @@
 
 import Foundation
 
-class FileCache {
-    private(set) var todoItemsList: [TodoItem] = []
+class FileCache: ObservableObject {
+    @Published private(set) var todoItemsList: [TodoItem] = []
     
-    func addItem(_ todoItem: TodoItem) {
-        if !todoItemsList.contains(where: { $0.id == todoItem.id }) {
-            todoItemsList.append(todoItem)
-        }
+    var completedCount: Int {
+        todoItemsList.filter { $0.completed }.count
     }
+    
+    func addItem(_ item: TodoItem) {
+        if let index = todoItemsList.firstIndex(where: { $0.id == item.id }) {
+            todoItemsList[index] = item
+        } else {
+            todoItemsList.append(item)
+        }
+        
+    }
+
     
     func deleteItem(id: String) {
         todoItemsList.removeAll { $0.id == id }
@@ -41,9 +49,21 @@ class FileCache {
         todoItemsList = rows.compactMap { TodoItem.parse(csv: $0) }
     }
     
+    func toggleCompleted(for itemId: String) {
+        if let index = todoItemsList.firstIndex(where: { $0.id == itemId }) {
+            todoItemsList[index].completed.toggle()
+        }
+    }
+    func formatDate(date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "ru_RU")
+        dateFormatter.dateFormat = "d MMMM"
+        return dateFormatter.string(from: date)
+    }
     private func getFileURL(fileName: String) -> URL {
         let fileManager = FileManager.default
         let urls = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
         return urls[0].appendingPathComponent(fileName)
     }
+
 }
