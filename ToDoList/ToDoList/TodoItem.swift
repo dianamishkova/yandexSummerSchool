@@ -7,20 +7,17 @@
 
 import Foundation
 
-struct TodoItem {
-    enum Importance: String {
-        case unimportant = "неважная"
-        case common = "обычная"
-        case important = "важная"
-    }
+struct TodoItem: Identifiable {
+    
     
     let id: String
-    let text: String
-    let importance: Importance
-    let deadline: Date?
-    let completed: Bool
+    var text: String
+    var importance: Importance
+    var deadline: Date?
+    var completed: Bool
     let creationDate: Date
     let editDate: Date?
+    var color: String?
     
     init(id: String = UUID().uuidString,
              text: String,
