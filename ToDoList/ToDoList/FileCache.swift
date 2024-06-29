@@ -54,10 +54,10 @@ class FileCache: ObservableObject {
             todoItemsList[index].completed.toggle()
         }
     }
-    func formatDate(date: Date) -> String {
+    func formatDate(date: Date, dateFormat: String) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "ru_RU")
-        dateFormatter.dateFormat = "d MMMM"
+        dateFormatter.dateFormat = dateFormat
         return dateFormatter.string(from: date)
     }
     private func getFileURL(fileName: String) -> URL {

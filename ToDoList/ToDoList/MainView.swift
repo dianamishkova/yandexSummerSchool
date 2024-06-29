@@ -35,22 +35,32 @@ struct MainView: View {
                                 }
                                 .buttonStyle(PlainButtonStyle())
                                 .contentShape(Rectangle())
-                                
-                                VStack(alignment: .leading) {
-                                    NavigationLink(destination: TaskView(todoItem: todoItem)) {
+                                HStack{
+                                    VStack(alignment: .leading) {
                                         Text(todoItem.importance != .common ? "\(todoItem.importance.rawValue) \(todoItem.text)" : todoItem.text)
                                             .lineLimit(3)
                                             .strikethrough(todoItem.completed, color: .gray)
                                             .foregroundColor(todoItem.completed ? .gray : .primary)
-                                    }
-                                    if let deadline = todoItem.deadline {
-                                        HStack {
-                                            Image(systemName: "calendar")
-                                            Text(fileCache.formatDate(date: deadline))
+                                            .background(
+                                                NavigationLink("", destination: TaskView(todoItem: todoItem, showDatePicker: todoItem.deadline != nil))
+                                                    .opacity(0)
+                                            )
+                                        if let deadline = todoItem.deadline {
+                                            HStack {
+                                                Image(systemName: "calendar")
+                                                Text(fileCache.formatDate(date: deadline, dateFormat: "dd MMMM"))
+                                            }
+                                            .font(.caption)
+                                            .foregroundColor(.gray)
                                         }
-                                        .font(.caption)
-                                        .foregroundColor(.gray)
                                     }
+                                    Spacer()
+                                    if let colorHex = todoItem.colorHex  {
+                                        Circle()
+                                            .fill(colorHex)
+                                            .frame(width: 20, height: 20)
+                                    }
+                                    
                                 }
                             }
                             .swipeActions(edge: .leading, allowsFullSwipe: true) {
@@ -78,9 +88,6 @@ struct MainView: View {
                     }
                 }
                 .listRowBackground(Color("SecondaryBack"))
-                
-                
-                
                 Button {
                     showTaskView.toggle()
                 } label: {
@@ -88,10 +95,10 @@ struct MainView: View {
                         .resizable()
                         .frame(width: 44, height: 44)
                 }
-                .navigationDestination(isPresented: $showTaskView) {
-                    TaskView(todoItem: TodoItem(text: "", importance: .common, deadline: Calendar.current.date(byAdding: .day, value: 1, to: Date.now), completed: false, creationDate: Date.now, editDate: Date.now))
-                }
                 .navigationTitle("Мои дела")
+            }
+            .navigationDestination(isPresented: $showTaskView) {
+                TaskView(todoItem: TodoItem(text: "", importance: .common, deadline: nil/*Calendar.current.date(byAdding: .day, value: 1, to: Date.now)*/, completed: false, creationDate: Date.now, editDate: Date.now), showDatePicker: false)
             }
             .modifier(FormBackgroundModifier())
         }

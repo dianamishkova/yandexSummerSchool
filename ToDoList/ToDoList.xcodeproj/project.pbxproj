@@ -12,7 +12,6 @@
 		E92981472C2F160200129A50 /* TaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92981462C2F160200129A50 /* TaskView.swift */; };
 		E92981492C2F161200129A50 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E92981482C2F161200129A50 /* MainView.swift */; };
 		E96E37E42C1DE49D00DEF692 /* ToDoListApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E96E37E32C1DE49D00DEF692 /* ToDoListApp.swift */; };
-		E96E37E62C1DE49D00DEF692 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E96E37E52C1DE49D00DEF692 /* ContentView.swift */; };
 		E96E37E82C1DE49F00DEF692 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E96E37E72C1DE49F00DEF692 /* Assets.xcassets */; };
 		E96E37EB2C1DE49F00DEF692 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E96E37EA2C1DE49F00DEF692 /* Preview Assets.xcassets */; };
 		E96E37FF2C1DE49F00DEF692 /* ToDoListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E96E37FE2C1DE49F00DEF692 /* ToDoListUITests.swift */; };
@@ -21,6 +20,7 @@
 		E9A752BA2C262648007324A6 /* TodoItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A752B92C262648007324A6 /* TodoItemTests.swift */; };
 		E9A818532C2FA7CD008F1E2F /* FormBackgroundModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A818522C2FA7CD008F1E2F /* FormBackgroundModifier.swift */; };
 		E9A818552C2FABFA008F1E2F /* ColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A818542C2FABFA008F1E2F /* ColorPicker.swift */; };
+		E9DCB0162C302BA7007385B4 /* ColorPaletteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9DCB0152C302BA7007385B4 /* ColorPaletteView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,7 +47,6 @@
 		E92981482C2F161200129A50 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		E96E37E02C1DE49D00DEF692 /* ToDoList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDoList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E96E37E32C1DE49D00DEF692 /* ToDoListApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoListApp.swift; sourceTree = "<group>"; };
-		E96E37E52C1DE49D00DEF692 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E96E37E72C1DE49F00DEF692 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E96E37EA2C1DE49F00DEF692 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		E96E37F02C1DE49F00DEF692 /* ToDoListTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ToDoListTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -58,6 +57,7 @@
 		E9A752B92C262648007324A6 /* TodoItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemTests.swift; sourceTree = "<group>"; };
 		E9A818522C2FA7CD008F1E2F /* FormBackgroundModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormBackgroundModifier.swift; sourceTree = "<group>"; };
 		E9A818542C2FABFA008F1E2F /* ColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPicker.swift; sourceTree = "<group>"; };
+		E9DCB0152C302BA7007385B4 /* ColorPaletteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPaletteView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,14 +111,14 @@
 				E96E380D2C1DE4C500DEF692 /* TodoItem.swift */,
 				E96E37E32C1DE49D00DEF692 /* ToDoListApp.swift */,
 				E919EFC62C2217FE00AF3034 /* FileCache.swift */,
-				E96E37E52C1DE49D00DEF692 /* ContentView.swift */,
 				E92981462C2F160200129A50 /* TaskView.swift */,
 				E92981482C2F161200129A50 /* MainView.swift */,
 				E9263C352C2F46A7005E11BB /* Importance.swift */,
+				E9A818542C2FABFA008F1E2F /* ColorPicker.swift */,
+				E9DCB0152C302BA7007385B4 /* ColorPaletteView.swift */,
 				E9A818522C2FA7CD008F1E2F /* FormBackgroundModifier.swift */,
 				E96E37E72C1DE49F00DEF692 /* Assets.xcassets */,
 				E96E37E92C1DE49F00DEF692 /* Preview Content */,
-				E9A818542C2FABFA008F1E2F /* ColorPicker.swift */,
 			);
 			path = ToDoList;
 			sourceTree = "<group>";
@@ -278,7 +278,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E96E37E62C1DE49D00DEF692 /* ContentView.swift in Sources */,
 				E92981492C2F161200129A50 /* MainView.swift in Sources */,
 				E9A818532C2FA7CD008F1E2F /* FormBackgroundModifier.swift in Sources */,
 				E9263C362C2F46A7005E11BB /* Importance.swift in Sources */,
@@ -286,6 +285,7 @@
 				E9A818552C2FABFA008F1E2F /* ColorPicker.swift in Sources */,
 				E919EFC72C2217FE00AF3034 /* FileCache.swift in Sources */,
 				E92981472C2F160200129A50 /* TaskView.swift in Sources */,
+				E9DCB0162C302BA7007385B4 /* ColorPaletteView.swift in Sources */,
 				E96E37E42C1DE49D00DEF692 /* ToDoListApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

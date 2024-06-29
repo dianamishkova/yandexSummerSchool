@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct TodoItem: Identifiable {
     
@@ -17,7 +18,7 @@ struct TodoItem: Identifiable {
     var completed: Bool
     let creationDate: Date
     let editDate: Date?
-    var color: String?
+    var colorHex: Color?
     
     init(id: String = UUID().uuidString,
              text: String,
@@ -25,7 +26,8 @@ struct TodoItem: Identifiable {
              deadline: Date? = nil,
              completed: Bool = false,
              creationDate: Date = Date(),
-             editDate: Date? = nil) {
+             editDate: Date? = nil,
+            colorHex: Color? = nil) {
             self.id = id
             self.text = text
             self.importance = importance
@@ -33,6 +35,7 @@ struct TodoItem: Identifiable {
             self.completed = completed
             self.creationDate = creationDate
             self.editDate = editDate
+            self.colorHex = colorHex
         }
     
 }
