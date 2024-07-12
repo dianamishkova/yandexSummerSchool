@@ -4,13 +4,11 @@
 //
 //  Created by Диана Мишкова on 15.06.24.
 //
-
+import FileCachePackage
 import Foundation
 import SwiftUI
 
-struct TodoItem: Identifiable {
-    
-    
+struct TodoItem: Identifiable, CSVProtocol, JSONProtocol {
     let id: String
     var text: String
     var importance: Importance
@@ -21,13 +19,13 @@ struct TodoItem: Identifiable {
     var colorHex: Color?
     
     init(id: String = UUID().uuidString,
-             text: String,
-             importance: Importance = .common,
-             deadline: Date? = nil,
-             completed: Bool = false,
-             creationDate: Date = Date(),
-             editDate: Date? = nil,
-            colorHex: Color? = nil) {
+         text: String,
+         importance: Importance = .common,
+         deadline: Date? = nil,
+         completed: Bool = false,
+         creationDate: Date = Date(),
+         editDate: Date? = nil,
+         colorHex: Color? = nil) {
             self.id = id
             self.text = text
             self.importance = importance
@@ -37,8 +35,4 @@ struct TodoItem: Identifiable {
             self.editDate = editDate
             self.colorHex = colorHex
         }
-    
 }
-
-
-

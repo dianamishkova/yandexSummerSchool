@@ -1,16 +1,18 @@
-import UIKit
+import CocoaLumberjackSwift
 import Combine
+
 import SwiftUI
+import UIKit
 
 class CalendarViewController: UIViewController {
-    private let fileCache: FileCache
+    private let viewModel: ViewModel
     private var collectionView: UICollectionView?
     private var cancellables = Set<AnyCancellable>()
     let stackView = UIStackView()
     let scrollView = UIScrollView()
     
-    init(fileCache: FileCache) {
-        self.fileCache = fileCache
+    init(viewModel: ViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -27,9 +29,9 @@ class CalendarViewController: UIViewController {
     }
     
     private struct Constants {
-        static let cellIdentifier: String = "schoolCell"
+        static let cellIdentifier = "schoolCell"
         static let cellHeight: CGFloat = 60
-        static let sectionHeaderIdentifier: String = "sectionHeader"
+        static let sectionHeaderIdentifier = "sectionHeader"
         static let sectionHeight: CGFloat = 50
     }
     
@@ -39,17 +41,14 @@ class CalendarViewController: UIViewController {
             view.removeFromSuperview()
         }
         scrollView.removeFromSuperview()
-
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.showsHorizontalScrollIndicator = false
-
         stackView.axis = .horizontal
         stackView.alignment = .fill
         stackView.distribution = .equalSpacing
         stackView.spacing = 8.0
         stackView.translatesAutoresizingMaskIntoConstraints = false
-
-        guard let deadlines = fileCache.datesList, !deadlines.isEmpty else {
+        guard let deadlines = viewModel.datesList, !deadlines.isEmpty else {
             return
         }
 
@@ -68,7 +67,6 @@ class CalendarViewController: UIViewController {
             button.heightAnchor.constraint(equalToConstant: 70).isActive = true
 
             stackView.addArrangedSubview(button)
-            
             if index == 0 {
                 button.backgroundColor = .highlightedButton
                 button.layer.borderWidth = 2.0
@@ -99,7 +97,7 @@ class CalendarViewController: UIViewController {
             separator.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 8),
             separator.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0),
             separator.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0),
-            separator.heightAnchor.constraint(equalToConstant: 1)
+            separator.heightAnchor.constraint(equalToConstant: 1),
         ])
 
         if let firstButton = stackView.arrangedSubviews.first as? UIButton {
@@ -107,25 +105,25 @@ class CalendarViewController: UIViewController {
         }
     }
 
-    @objc private func dateButtonTapped(_ sender: UIButton) {
+    @objc 
+    private func dateButtonTapped(_ sender: UIButton) {
         let index = sender.tag
         let indexPath = IndexPath(item: 0, section: index)
         collectionView?.scrollToItem(at: indexPath, at: .top, animated: true)
         updateDateSelection(for: index)
     }
     
-    
     private func setupCollectionView() {
         let collectionViewLayout = UICollectionViewFlowLayout()
         collectionViewLayout.itemSize = CGSize(width: view.frame.size.width - 32, height: Constants.cellHeight)
-        collectionViewLayout.headerReferenceSize = CGSize(width: view.frame.size.width , height: Constants.sectionHeight)
+        collectionViewLayout.headerReferenceSize = CGSize(width: view.frame.size.width, height: Constants.sectionHeight)
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
         collectionView?.translatesAutoresizingMaskIntoConstraints = false
         
         collectionViewLayout.minimumLineSpacing = 1
         collectionViewLayout.minimumInteritemSpacing = 0
         
-        guard let collectionView = collectionView else {
+        guard let collectionView else {
             return
         }
         
@@ -134,7 +132,11 @@ class CalendarViewController: UIViewController {
         collectionView.alwaysBounceVertical = true
         
         collectionView.register(ToDoItemCell.self, forCellWithReuseIdentifier: Constants.cellIdentifier)
-        collectionView.register(SectionHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: Constants.sectionHeaderIdentifier)
+        collectionView.register(
+            SectionHeaderView.self,
+            forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
+            withReuseIdentifier: Constants.sectionHeaderIdentifier
+        )
         
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -143,28 +145,26 @@ class CalendarViewController: UIViewController {
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 100),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
-        
     }
 
     private func setupBinders() {
-        Publishers.Zip(fileCache.$todoItemsList, fileCache.$datesList)
+        Publishers.Zip(viewModel.$todoItemsList, viewModel.$datesList)
             .receive(on: RunLoop.main)
             .sink { [weak self] items in
-                let _ = items.0
-                let _ = items.1
+                _ = items.0
+                _ = items.1
                 self?.collectionView?.reloadData()
                 self?.createScrollableDateButtons()
                 self?.collectionView?.layoutIfNeeded()
             }
             .store(in: &cancellables)
 
-        
-        fileCache.$error
+        viewModel.$error
             .receive(on: RunLoop.main)
             .sink { error in
-                if let error = error {
+                if let error {
                     switch error {
                     case .retrievingError(let errorMessage):
                         print(errorMessage)
@@ -190,34 +190,32 @@ class CalendarViewController: UIViewController {
             floatingButton.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
             floatingButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
         ])
-        
     }
         
-    @objc private func floatingButtonTapped() {
-        let swiftUIView = TaskView(todoItem: TodoItem(text: ""), showDate: false).environmentObject(fileCache)
-        
+    @objc 
+    private func floatingButtonTapped() {
+        let swiftUIView = TaskView(todoItem: TodoItem(text: ""), showDate: false).environmentObject(viewModel)
         let hostingController = UIHostingController(rootView: swiftUIView)
-        
-        if let navigationController = self.navigationController {
-            navigationController.pushViewController(hostingController, animated: true)
-        } else {
-            present(hostingController, animated: true, completion: nil)
-        }
+        present(hostingController, animated: true, completion: nil)
+        DDLogInfo("Navigated to TaskView")
     }
 }
 
 extension CalendarViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return fileCache.dateSectionsList?[section].todos.count ?? 0
+        return viewModel.dateSectionsList?[section].todos.count ?? 0
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Constants.cellIdentifier, for: indexPath) as? ToDoItemCell else {
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: Constants.cellIdentifier,
+            for: indexPath
+        ) as? ToDoItemCell else {
             return UICollectionViewCell()
         }
-        cell.fileCache = fileCache
-        if let dateSection = fileCache.dateSectionsList?[indexPath.section] {
+        cell.viewModel = viewModel
+        if let dateSection = viewModel.dateSectionsList?[indexPath.section] {
             let todo = dateSection.todos[indexPath.item]
             cell.populate(todo)
             
@@ -242,13 +240,19 @@ extension CalendarViewController: UICollectionViewDataSource {
     }
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return fileCache.dateSectionsList?.count ?? 1
+        return viewModel.dateSectionsList?.count ?? 1
     }
 
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    func collectionView(_ collectionView: UICollectionView, 
+                        viewForSupplementaryElementOfKind kind: String,
+                        at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader,
-           let sectionHeader = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: Constants.sectionHeaderIdentifier, for: indexPath) as? SectionHeaderView {
-            sectionHeader.headerLabel.text = fileCache.dateSectionsList?[indexPath.section].date.description
+           let sectionHeader = collectionView.dequeueReusableSupplementaryView(
+            ofKind: kind,
+            withReuseIdentifier: Constants.sectionHeaderIdentifier,
+            for: indexPath
+           ) as? SectionHeaderView {
+            sectionHeader.headerLabel.text = viewModel.dateSectionsList?[indexPath.section].date.description
             return sectionHeader
         }
         return UICollectionReusableView()
@@ -257,7 +261,7 @@ extension CalendarViewController: UICollectionViewDataSource {
 
 extension CalendarViewController: UICollectionViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard let collectionView = collectionView else { return }
+        guard let collectionView else { return }
         let visibleIndexPaths = collectionView.indexPathsForVisibleItems.sorted()
         if let firstVisibleIndexPath = visibleIndexPaths.first {
             updateDateSelection(for: firstVisibleIndexPath.section)

@@ -3,12 +3,13 @@ import SwiftUI
 struct ColorPicker: View {
     @State private var selectedBaseColor: Color = .white
     @State var selectedColor: Color
-    @State private var colorCode: String = "#FFFFFF"
-    @State private var brightness: Double = 1.0
+    @State private var colorCode = "#FFFFFF"
+    @State private var brightness = 1.0
     @State var todoItem: TodoItem
     
-    @Environment(\.dismiss) var dismiss
-    @EnvironmentObject var fileCache: FileCache
+    @Environment(\.dismiss)
+    var dismiss
+    @EnvironmentObject var viewModel: ViewModel
 
     var body: some View {
         VStack {
@@ -58,13 +59,7 @@ struct ColorPicker: View {
             },
             trailing: Button("Сохранить") {
                 todoItem.colorHex = selectedColor
-                fileCache.addItem(todoItem)
-                do {
-                    try fileCache.save(to: "todoItems.json")
-                    
-                } catch {
-                    print("Error saving data: \(error)")
-                }
+                viewModel.addItem(todoItem)
                 dismiss()
             }
         )
@@ -84,8 +79,16 @@ struct ColorPicker: View {
     }
 }
 
-
 #Preview {
-    ColorPicker(selectedColor: Color.white, todoItem: TodoItem(id: "1", text: "Купить что-то", importance: .important, completed: false, creationDate: Date(timeIntervalSince1970: 1822548800)))
-        .environmentObject(FileCache())
+    ColorPicker(
+        selectedColor: Color.white,
+        todoItem: TodoItem(
+            id: "1",
+            text: "Купить что-то",
+            importance: .important,
+            completed: false,
+            creationDate: Date(timeIntervalSince1970: 1_822_548_800)
+        )
+    )
+        .environmentObject(ViewModel())
 }
