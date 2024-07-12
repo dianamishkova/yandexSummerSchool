@@ -1,9 +1,10 @@
+import FileCachePackage
 import Foundation
 import UIKit
 
 class ToDoItemCell: UICollectionViewCell {
     private var todoItem: TodoItem?
-    var fileCache: FileCache?
+    var viewModel: ViewModel?
     private var swipeGestureRecognizerRight: UISwipeGestureRecognizer?
     private var swipeGestureRecognizerLeft: UISwipeGestureRecognizer?
     
@@ -56,7 +57,7 @@ class ToDoItemCell: UICollectionViewCell {
             textLabel.topAnchor.constraint(equalTo: wrapperView.topAnchor, constant: Constants.topInset),
             textLabel.leadingAnchor.constraint(equalTo: wrapperView.leadingAnchor, constant: Constants.leftInset),
             textLabel.trailingAnchor.constraint(equalTo: wrapperView.trailingAnchor, constant: -Constants.rightInset),
-            textLabel.bottomAnchor.constraint(equalTo: wrapperView.bottomAnchor, constant: -Constants.bottomInset)
+            textLabel.bottomAnchor.constraint(equalTo: wrapperView.bottomAnchor, constant: -Constants.bottomInset),
         ])
     }
     
@@ -66,7 +67,7 @@ class ToDoItemCell: UICollectionViewCell {
     }
     
     private func updateTextLabel() {
-        guard let todoItem = todoItem else { return }
+        guard let todoItem else { return }
         let text = todoItem.text
         if todoItem.completed {
             let attributeString = getAttributedString(text)
@@ -80,7 +81,11 @@ class ToDoItemCell: UICollectionViewCell {
     }
     
     func setCornerRadius(corners: UIRectCorner, radius: CGFloat) {
-        let path = UIBezierPath(roundedRect: contentView.bounds, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+        let path = UIBezierPath(
+            roundedRect: contentView.bounds,
+            byRoundingCorners: corners,
+            cornerRadii: CGSize(width: radius, height: radius)
+        )
         let mask = CAShapeLayer()
         mask.path = path.cgPath
         contentView.layer.mask = mask
@@ -89,37 +94,39 @@ class ToDoItemCell: UICollectionViewCell {
     private func setupSwipeGestureRecognizers() {
         swipeGestureRecognizerRight = UISwipeGestureRecognizer(target: self, action: #selector(handleRightSwipeGesture))
         swipeGestureRecognizerRight?.direction = .right
-        if let swipeGestureRecognizerRight = swipeGestureRecognizerRight {
+        if let swipeGestureRecognizerRight {
             contentView.addGestureRecognizer(swipeGestureRecognizerRight)
         }
         
         swipeGestureRecognizerLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleLeftSwipeGesture))
         swipeGestureRecognizerLeft?.direction = .left
-        if let swipeGestureRecognizerLeft = swipeGestureRecognizerLeft {
+        if let swipeGestureRecognizerLeft {
             contentView.addGestureRecognizer(swipeGestureRecognizerLeft)
         }
     }
     
-    @objc private func handleRightSwipeGesture() {
+    @objc 
+    private func handleRightSwipeGesture() {
         todoItem?.completed = true
-        guard let todoItem = todoItem else { return }
-        fileCache?.updateToDoItem(todoItem)
+        guard let todoItem else { return }
+        viewModel?.updateToDoItem(todoItem)
         updateTextLabel()
     }
 
-    @objc private func handleLeftSwipeGesture() {
+    @objc 
+    private func handleLeftSwipeGesture() {
         todoItem?.completed = false
-        guard let todoItem = todoItem else { return }
-        fileCache?.updateToDoItem(todoItem)
+        guard let todoItem else { return }
+        viewModel?.updateToDoItem(todoItem)
         updateTextLabel()
     }
     
     private func getAttributedString(_ text: String) -> NSAttributedString {
-        let attributeString: NSMutableAttributedString = NSMutableAttributedString(string: text)
+        let attributeString = NSMutableAttributedString(string: text)
         attributeString.addAttribute(
             NSAttributedString.Key.strikethroughStyle,
             value: NSUnderlineStyle.single.rawValue,
-            range: NSMakeRange(0, attributeString.length)
+            range: NSRange(location: 0, length: attributeString.length)
         )
         return attributeString
     }

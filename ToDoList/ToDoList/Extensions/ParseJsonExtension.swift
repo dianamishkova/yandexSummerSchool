@@ -13,15 +13,15 @@ extension TodoItem {
             "id": id,
             "text": text,
             "completed": completed,
-            "creationDate": creationDate.timeIntervalSince1970
+            "creationDate": creationDate.timeIntervalSince1970,
         ]
         if importance != .common {
             jsonObject["importance"] = importance.rawValue
         }
-        if let deadline = deadline {
+        if let deadline {
             jsonObject["deadline"] = deadline.timeIntervalSince1970
         }
-        if let editDate = editDate {
+        if let editDate {
             jsonObject["editDate"] = editDate.timeIntervalSince1970
         }
         

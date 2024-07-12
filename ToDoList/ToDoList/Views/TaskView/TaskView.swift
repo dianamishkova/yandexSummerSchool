@@ -1,14 +1,15 @@
+import CocoaLumberjackSwift
 import SwiftUI
 
 struct TaskView: View {
-    @Environment(\.dismiss) var dismiss
-    @EnvironmentObject var fileCache: FileCache
+    @Environment(\.dismiss) 
+    var dismiss
+    @EnvironmentObject var viewModel: ViewModel
     @State var todoItem: TodoItem
-    @State var showDatePicker: Bool = false
+    @State var showDatePicker = false
     @State var showDate: Bool
     @State private var showColorPicker = false
     @State private var selectedColor = Color.white
-    
     var body: some View {
         NavigationStack {
             Form {
@@ -38,13 +39,12 @@ struct TaskView: View {
                             .pickerStyle(SegmentedPickerStyle())
                             .frame(width: 150)
                         }
-                        
                         HStack {
                             Button("Выбрать цвет") {
                                 showColorPicker = true
                             }
                             Spacer()
-                            if let colorHex = todoItem.colorHex  {
+                            if let colorHex = todoItem.colorHex {
                                 Circle()
                                     .fill(colorHex)
                                     .frame(width: 20, height: 20)
@@ -60,9 +60,8 @@ struct TaskView: View {
                         if showDate {
                             Button {
                                 showDatePicker.toggle()
-                            
                             } label: {
-                                Text(FileCache.formatDate(date: todoItem.deadline, dateFormat: "d MMMM YYYY") ?? "")
+                                Text(ViewModel.formatDate(date: todoItem.deadline, dateFormat: "d MMMM YYYY") ?? "")
                             }
                         }
                     }
@@ -80,19 +79,13 @@ struct TaskView: View {
                         )
                         .datePickerStyle(GraphicalDatePickerStyle())
                     }
-                    
                 }
 
                 Section {
                     HStack {
                         Spacer()
                         Button(role: .destructive) {
-                            fileCache.deleteItem(id: todoItem.id)
-                            do {
-                                try fileCache.save(to: "todoItems.json")
-                            } catch {
-                                print("Error saving data: \(error)")
-                            }
+                            viewModel.deleteItem(id: todoItem.id)
                             dismiss()
                         } label: {
                             Text("Удалить")
@@ -114,19 +107,17 @@ struct TaskView: View {
             .navigationBarItems(
                 leading: Button("Отменить") {
                     dismiss()
+                    DDLogInfo("Navigated to MainView")
                 },
                 trailing: Button {
                     if !showDate {
                         todoItem.deadline = nil
                     }
-                    fileCache.addItem(todoItem)
-                    do {
-                        try fileCache.save(to: "todoItems.json")
-                        try fileCache.load(fromJSON: "todoItems.json")
-                    } catch {
-                        print("Error saving data: \(error)")
-                    }
+                    viewModel.addItem(todoItem)
+                    viewModel.save()
+                    viewModel.load()
                     dismiss()
+                    DDLogInfo("Navigated to MainView")
                 } label: {
                     Text("Сохранить")
                         .foregroundColor(todoItem.text.isEmpty ? .gray : .blue)
@@ -134,13 +125,22 @@ struct TaskView: View {
                 .disabled(todoItem.text.isEmpty)
             )
         }
-        
         .onChange(of: showDate) {
             todoItem.deadline = Calendar.current.date(byAdding: .day, value: 1, to: Date())
         }
     }
 }
 #Preview {
-    TaskView(todoItem: TodoItem(id: "1", text: "Купить что-то", importance: .important, completed: false, creationDate: Date(timeIntervalSince1970: 1822548800)), showDatePicker: false, showDate: false)
-        .environmentObject(FileCache())
+    TaskView(
+        todoItem: TodoItem(
+            id: "1",
+            text: "Купить что-то",
+            importance: .important,
+            completed: false,
+            creationDate: Date(timeIntervalSince1970: 1_822_548_800)
+        ),
+        showDatePicker: false,
+        showDate: false
+    )
+        .environmentObject(ViewModel())
 }

@@ -1,18 +1,22 @@
+import CocoaLumberjackSwift
 import SwiftUI
 
 struct CalendarView: View {
-    @Environment(\.presentationMode) var presentationMode
-    let fileCache: FileCache
+    @Environment(\.presentationMode) 
+    var presentationMode
+    let viewModel: ViewModel
     var body: some View {
         NavigationView {
-            CalendarViewControllerWrapper(fileCache: fileCache)
+            CalendarViewControllerWrapper(viewModel: viewModel)
                 .navigationBarTitle("Мои дела", displayMode: .inline)
-                .navigationBarItems(leading: Button(action: {
-                    presentationMode.wrappedValue.dismiss()
-                }) {
-                    Image(systemName: "chevron.left")
-                        .foregroundColor(.gray)
-                })
+                .navigationBarItems(leading: 
+                    Button {
+                        presentationMode.wrappedValue.dismiss()
+                        DDLogInfo("Navigated to MainView")
+                    } label: {
+                        Image(systemName: "chevron.left")
+                            .foregroundColor(.gray)
+                    })
         }
     }
 }

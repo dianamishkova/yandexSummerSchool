@@ -15,7 +15,7 @@ class SectionHeaderView: UICollectionReusableView {
         addSubview(headerLabel)
         NSLayoutConstraint.activate([
             headerLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 32),
-            headerLabel.centerYAnchor.constraint(equalTo: centerYAnchor)
+            headerLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
         ])
     }
     

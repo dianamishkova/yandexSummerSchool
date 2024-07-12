@@ -8,11 +8,12 @@
 import SwiftUI
 
 struct CalendarViewControllerWrapper: UIViewControllerRepresentable {
-    var fileCache: FileCache
     typealias UIViewControllerType = CalendarViewController
-
+    
+    var viewModel: ViewModel
+    
     func makeUIViewController(context: Context) -> CalendarViewController {
-        return CalendarViewController(fileCache: fileCache)
+        return CalendarViewController(viewModel: viewModel)
     }
 
     func updateUIViewController(_ uiViewController: CalendarViewController, context: Context) {
