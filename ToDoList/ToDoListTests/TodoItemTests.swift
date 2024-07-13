@@ -9,7 +9,37 @@ import XCTest
 @testable import ToDoList
 
 class TodoItemTests: XCTestCase {
-
+    func testDataTaskSuccess() async throws {
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+        let urlRequest = URLRequest(url: url)
+        let session = URLSession.shared
+        let (data, response) = try await session.dataTask(for: urlRequest)
+        XCTAssertNotNil(data)
+        XCTAssertNotNil(response)
+        if let httpResponse = response as? HTTPURLResponse {
+            XCTAssertEqual(httpResponse.statusCode, 200)
+        } else {
+            XCTFail("Response is not an HTTPURLResponse")
+        }
+    }
+    func testDataTaskCancellation() async {
+        let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1")!
+        let urlRequest = URLRequest(url: url)
+        let session = URLSession.shared
+        let task = Task {
+            do {
+                try await session.dataTask(for: urlRequest)
+            } catch {
+                XCTFail("Unexpected error")
+            }
+        }
+        task.cancel()
+        let result = await task.value
+        XCTAssertNotNil(result)
+        if !task.isCancelled {
+            XCTFail("Task should be cancelled")
+        }
+    }
     
     func testTodoItemDefaultInitialization() {
         let text = "Test task"
@@ -38,22 +68,23 @@ class TodoItemTests: XCTestCase {
             editDate: editDate
         )
         
-        let json = todoItem.json as! [String: Any]
-        
-        XCTAssertEqual(json["id"] as? String, "1")
-        XCTAssertEqual(json["text"] as? String, "Test task")
-        XCTAssertEqual(json["importance"] as? String, "важная")
-        XCTAssertEqual(json["deadline"] as? TimeInterval, deadline.timeIntervalSince1970)
-        XCTAssertEqual(json["completed"] as? Bool, true)
-        XCTAssertEqual(json["creationDate"] as? TimeInterval, creationDate.timeIntervalSince1970)
-        XCTAssertEqual(json["editDate"] as? TimeInterval, editDate.timeIntervalSince1970)
+        if let json = todoItem.json as? [String: Any] {
+            
+            XCTAssertEqual(json["id"] as? String, "1")
+            XCTAssertEqual(json["text"] as? String, "Test task")
+            XCTAssertEqual(json["importance"] as? String, "‼️")
+            XCTAssertEqual(json["deadline"] as? TimeInterval, deadline.timeIntervalSince1970)
+            XCTAssertEqual(json["completed"] as? Bool, true)
+            XCTAssertEqual(json["creationDate"] as? TimeInterval, creationDate.timeIntervalSince1970)
+            XCTAssertEqual(json["editDate"] as? TimeInterval, editDate.timeIntervalSince1970)
+        }
     }
     
     func testTodoItemJSONParsing() {
         let json: [String: Any] = [
             "id": "1",
             "text": "Test task",
-            "importance": "важная",
+            "importance": "‼️",
             "deadline": 1822548800.0,
             "completed": true,
             "creationDate": 1622548800.0,
@@ -75,7 +106,7 @@ class TodoItemTests: XCTestCase {
     }
     
     func testTodoItemCSVParsing() {
-        let csv = "1,\"Test task, with comma\",важная,1822548800.0,true,1622548800,1622548800.0"
+        let csv = "1,\"Test task, with comma\",‼️,1822548800.0,true,1622548800,1622548800.0"
         
         guard let todoItem = TodoItem.parse(csv: csv) else {
             XCTFail("Failed to parse TodoItem from CSV")
@@ -92,7 +123,7 @@ class TodoItemTests: XCTestCase {
     }
     
     func testTodoItemCSVParsingWithoutQuotes() {
-        let csv = "1,Test task,важная,,true,1640920800,"
+        let csv = "1,Test task,‼️,,true,1640920800,"
         
         guard let todoItem = TodoItem.parse(csv: csv) else {
             XCTFail("Failed to parse TodoItem from CSV")
