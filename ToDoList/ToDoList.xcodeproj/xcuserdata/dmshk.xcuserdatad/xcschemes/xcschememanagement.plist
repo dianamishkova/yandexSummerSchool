@@ -7,7 +7,25 @@
 		<key>ToDoList.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>0</integer>
+			<integer>4</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>E96E37DF2C1DE49D00DEF692</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>E96E37EF2C1DE49F00DEF692</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>E96E37F92C1DE49F00DEF692</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>
