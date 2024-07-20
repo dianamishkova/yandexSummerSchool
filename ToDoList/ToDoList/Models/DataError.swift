@@ -8,5 +8,13 @@
 import Foundation
 
 enum DataError: Error {
+    case itemNotFound
+    case invalidRevision
     case retrievingError(String)
+    case invalidURL
+    case invalidResponse
+    case networkError(Error)
+    case encodingError
+    case parsingError
+    case serverError
 }

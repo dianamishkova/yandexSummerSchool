@@ -16,19 +16,18 @@ struct TaskCellView: View {
             Button {
                 viewModel.toggleCompleted(for: todoItem.id)
             } label: {
-                Image(systemName: todoItem.completed ? "checkmark.circle.fill" : "circle")
-                    .foregroundColor(todoItem.completed ? .green : (todoItem.importance == .important ? .red : .gray))
+                Image(systemName: todoItem.done ? "checkmark.circle.fill" : "circle")
+                    .foregroundColor(todoItem.done ? .green : (todoItem.importance == .important ? .red : .gray))
             }
             .buttonStyle(PlainButtonStyle())
             .contentShape(Rectangle())
             HStack {
                 VStack(alignment: .leading) {
                     Text(
-                        todoItem.importance != .common ? "\(todoItem.importance.rawValue) \(todoItem.text)" : todoItem.text
-                    )
+                        todoItem.importance != .basic ? "\(todoItem.importance.rawValue) \(todoItem.text)" : todoItem.text)
                         .lineLimit(3)
-                        .strikethrough(todoItem.completed, color: .gray)
-                        .foregroundColor(todoItem.completed ? .gray : .primary)
+                        .strikethrough(todoItem.done, color: .gray)
+                        .foregroundColor(todoItem.done ? .gray : .primary)
                         .background(
                             NavigationLink(
                                 "",
@@ -39,16 +38,25 @@ struct TaskCellView: View {
                     if let deadline = todoItem.deadline {
                         HStack {
                             Image(systemName: "calendar")
-                            Text(ViewModel.formatDate(date: deadline, dateFormat: "d MMMM") ?? "")
+                            Text(
+                                ViewModel.formatDate(
+                                    date: Date(
+                                        timeIntervalSince1970: TimeInterval(
+                                            deadline
+                                        )
+                                    ),
+                                    dateFormat: "d MMMM"
+                                ) ?? ""
+                            )
                         }
                         .font(.caption)
                         .foregroundColor(.gray)
                     }
                 }
                 Spacer()
-                if let colorHex = todoItem.colorHex {
+                if let colorHex = todoItem.color {
                     Circle()
-                        .fill(colorHex)
+                        .fill(Color(hex: colorHex) ?? .white)
                         .frame(width: 20, height: 20)
                 }
             }
@@ -63,7 +71,9 @@ struct TaskCellView: View {
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             Button(role: .destructive) {
-                viewModel.deleteItem(id: todoItem.id)
+                Task {
+                    await viewModel.deleteToDoItem(id: todoItem.id, revision: viewModel.revision)
+                }
             } label: {
                 Label("", systemImage: "trash.fill")
             }

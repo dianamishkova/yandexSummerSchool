@@ -69,7 +69,7 @@ class ToDoItemCell: UICollectionViewCell {
     private func updateTextLabel() {
         guard let todoItem else { return }
         let text = todoItem.text
-        if todoItem.completed {
+        if todoItem.done {
             let attributeString = getAttributedString(text)
             textLabel.attributedText = attributeString
             textLabel.textColor = .gray
@@ -107,7 +107,7 @@ class ToDoItemCell: UICollectionViewCell {
     
     @objc 
     private func handleRightSwipeGesture() {
-        todoItem?.completed = true
+        todoItem?.done = true
         guard let todoItem else { return }
         viewModel?.updateToDoItem(todoItem)
         updateTextLabel()
@@ -115,7 +115,7 @@ class ToDoItemCell: UICollectionViewCell {
 
     @objc 
     private func handleLeftSwipeGesture() {
-        todoItem?.completed = false
+        todoItem?.done = false
         guard let todoItem else { return }
         viewModel?.updateToDoItem(todoItem)
         updateTextLabel()

@@ -2,7 +2,7 @@ import CocoaLumberjackSwift
 import SwiftUI
 
 struct TaskView: View {
-    @Environment(\.dismiss) 
+    @Environment(\.dismiss)
     var dismiss
     @EnvironmentObject var viewModel: ViewModel
     @State var todoItem: TodoItem
@@ -10,6 +10,7 @@ struct TaskView: View {
     @State var showDate: Bool
     @State private var showColorPicker = false
     @State private var selectedColor = Color.white
+    
     var body: some View {
         NavigationStack {
             Form {
@@ -32,7 +33,7 @@ struct TaskView: View {
                             Text("Важность")
                             Spacer()
                             Picker("Важность", selection: $todoItem.importance) {
-                                ForEach(Importance.allCases) { importance in
+                                ForEach(Importance.allCases, id: \.self) { importance in
                                     Text(importance.rawValue).tag(importance)
                                 }
                             }
@@ -44,9 +45,9 @@ struct TaskView: View {
                                 showColorPicker = true
                             }
                             Spacer()
-                            if let colorHex = todoItem.colorHex {
+                            if let colorHex = todoItem.color {
                                 Circle()
-                                    .fill(colorHex)
+                                    .fill(Color(hex: colorHex) ?? .white)
                                     .frame(width: 20, height: 20)
                                     .padding()
                             }
@@ -61,7 +62,16 @@ struct TaskView: View {
                             Button {
                                 showDatePicker.toggle()
                             } label: {
-                                Text(ViewModel.formatDate(date: todoItem.deadline, dateFormat: "d MMMM YYYY") ?? "")
+                                Text(
+                                    ViewModel.formatDate(
+                                        date: Date(
+                                            timeIntervalSince1970: TimeInterval(
+                                                todoItem.deadline ?? 0
+                                            )
+                                        ),
+                                        dateFormat: "d MMMM YYYY"
+                                    ) ?? ""
+                                )
                             }
                         }
                     }
@@ -71,9 +81,9 @@ struct TaskView: View {
                             "Дата",
                             selection: Binding(
                                 get: {
-                                    todoItem.deadline ?? Date()
+                                    Date(timeIntervalSince1970: TimeInterval(todoItem.deadline ?? 0))
                                 },
-                                set: { newValue in todoItem.deadline = newValue }
+                                set: { newValue in todoItem.deadline = Int64(newValue.timeIntervalSince1970) }
                             ),
                             displayedComponents: [.date]
                         )
@@ -85,7 +95,9 @@ struct TaskView: View {
                     HStack {
                         Spacer()
                         Button(role: .destructive) {
-                            viewModel.deleteItem(id: todoItem.id)
+                            Task {
+                                await viewModel.deleteToDoItem(id: todoItem.id, revision: viewModel.revision)
+                            }
                             dismiss()
                         } label: {
                             Text("Удалить")
@@ -113,9 +125,13 @@ struct TaskView: View {
                     if !showDate {
                         todoItem.deadline = nil
                     }
-                    viewModel.addItem(todoItem)
-                    viewModel.save()
-                    viewModel.load()
+                    Task {
+                        if viewModel.todoItemsList.contains(where: { $0.id == todoItem.id}) {
+                            await viewModel.updateToDoItem(todoItem: todoItem, revision: viewModel.revision)
+                        } else {
+                            await viewModel.addToDo(item: todoItem, revision: viewModel.revision)
+                        }
+                    }
                     dismiss()
                     DDLogInfo("Navigated to MainView")
                 } label: {
@@ -125,22 +141,17 @@ struct TaskView: View {
                 .disabled(todoItem.text.isEmpty)
             )
         }
-        .onChange(of: showDate) {
-            todoItem.deadline = Calendar.current.date(byAdding: .day, value: 1, to: Date())
+        .onAppear {
+            Task {
+                await viewModel.getToDoItem(id: todoItem.id)
+            }
+        }
+        .onChange(of: showDate) { newValue in
+            if newValue {
+                todoItem.deadline = Int64(Calendar.current.date(byAdding: .day, value: 1, to: Date())?.timeIntervalSince1970 ?? 0)
+            } else {
+                todoItem.deadline = nil
+            }
         }
     }
-}
-#Preview {
-    TaskView(
-        todoItem: TodoItem(
-            id: "1",
-            text: "Купить что-то",
-            importance: .important,
-            completed: false,
-            creationDate: Date(timeIntervalSince1970: 1_822_548_800)
-        ),
-        showDatePicker: false,
-        showDate: false
-    )
-        .environmentObject(ViewModel())
 }

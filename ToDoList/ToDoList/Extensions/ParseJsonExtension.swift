@@ -6,55 +6,61 @@
 //
 
 import Foundation
+import SwiftUI
 
 extension TodoItem {
     var json: Any {
         var jsonObject: [String: Any] = [
             "id": id,
             "text": text,
-            "completed": completed,
-            "creationDate": creationDate.timeIntervalSince1970,
+            "done": done,
+            "created_at": createdAt,
+            "changed_at": changedAt,
+            "last_updated_by": lastUpdatedBy,
         ]
-        if importance != .common {
+        if importance != .basic {
             jsonObject["importance"] = importance.rawValue
         }
         if let deadline {
-            jsonObject["deadline"] = deadline.timeIntervalSince1970
+            jsonObject["deadline"] = deadline
         }
-        if let editDate {
-            jsonObject["editDate"] = editDate.timeIntervalSince1970
+        if let color {
+            jsonObject["color"] = color
         }
-        
         return jsonObject
     }
     
     static func parse(json: Any) -> TodoItem? {
         guard let dict = json as? [String: Any],
-            let id = dict["id"] as? String,
-            let text = dict["text"] as? String,
-            let completed = dict["completed"] as? Bool,
-            let creationTimestamp = dict["creationDate"] as? TimeInterval else {
-                return nil
-            }
-        let creationDate = Date(timeIntervalSince1970: creationTimestamp)
-            
-        let editTimestamp = dict["editDate"] as? TimeInterval
-        let editDate = editTimestamp != nil ? Date(timeIntervalSince1970: editTimestamp!) : nil
+              let id = dict["id"] as? String,
+              let text = dict["text"] as? String,
+              let done = dict["done"] as? Bool,
+              let createdAt = dict["created_at"] as? Int64,
+              let changedAt = dict["changed_at"] as? Int64,
+              let lastUpdatedBy = dict["last_updated_by"] as? String else {
+            return nil
+        }
         
+        // Обработка importance
         let importanceString = dict["importance"] as? String
-        let importance = Importance(rawValue: importanceString ?? Importance.common.rawValue) ?? .common
+        let importance = Importance(rawValue: importanceString ?? Importance.basic.rawValue) ?? .basic
         
-        let deadlineTimestamp = dict["deadline"] as? TimeInterval
-        let deadline = deadlineTimestamp != nil ? Date(timeIntervalSince1970: deadlineTimestamp!) : nil
-            
+        // Обработка deadline
+        let deadline = dict["deadline"] as? Int64
+        
+        // Обработка color
+        let color = dict["color"] as? String
+        
         return TodoItem(
             id: id,
             text: text,
             importance: importance,
             deadline: deadline,
-            completed: completed,
-            creationDate: creationDate,
-            editDate: editDate
+            done: done,
+            createdAt: createdAt,
+            changedAt: changedAt,
+            color: color,
+            lastUpdatedBy: lastUpdatedBy
         )
     }
 }
