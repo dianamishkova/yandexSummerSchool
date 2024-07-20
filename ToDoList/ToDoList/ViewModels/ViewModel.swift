@@ -89,7 +89,6 @@ class ViewModel: ObservableObject {
                     DispatchQueue.main.async {
                         self?.todoItemsList = todos.list
                         self?.revision = todos.revision
-                        print(todos.list)
                     }
                 case .failure(let error):
                     DDLogInfo("Failed to update to-do list: \(error.localizedDescription)")
@@ -107,7 +106,6 @@ class ViewModel: ObservableObject {
                 await apiService.getToDoItem(id: id) { [weak self] result in
                     switch result {
                     case .success(let todo):
-                        print(todo)
                         DispatchQueue.main.async {
                             self?.todoItem = todo.element
                         }
@@ -117,7 +115,7 @@ class ViewModel: ObservableObject {
                 }
             }
         default:
-            print("No network connectivity")
+            DDLogInfo("No network connectivity")
         }
     }
     
@@ -203,7 +201,6 @@ class ViewModel: ObservableObject {
         } catch {
             todoItemsList = []
         }
-        DDLogInfo("Loaded from file")
     }
     
     func save() {
