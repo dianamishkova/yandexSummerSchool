@@ -28,20 +28,20 @@ extension TodoItem {
            
         let id = components[0]
         let text = components[1].trimmingCharacters(in: CharacterSet(charactersIn: "\"\""))
-        let importance = Importance(rawValue: components[2]) ?? .common
-        let deadline = components[3].isEmpty ? nil : Date(timeIntervalSince1970: TimeInterval(components[3])!)
+        let importance = Importance(rawValue: components[2]) ?? .basic
+        let deadline = components[3].isEmpty ? nil : Int64(components[3]) ?? 0
         let completed = Bool(components[4]) ?? false
-        let creationDate = Date(timeIntervalSince1970: TimeInterval(components[5])!)
-        let editDate = components[6].isEmpty ? nil : Date(timeIntervalSince1970: TimeInterval(components[6])!)
+        let creationDate = Int64(components[5]) ?? 0
+        let editDate = Int64(components[6]) ?? 0
         
         return TodoItem(
             id: id,
             text: text,
             importance: importance,
             deadline: deadline,
-            completed: completed,
-            creationDate: creationDate,
-            editDate: editDate
+            done: completed,
+            createdAt: creationDate,
+            changedAt: editDate, lastUpdatedBy: ""
         )
     }
 }

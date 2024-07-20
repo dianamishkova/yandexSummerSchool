@@ -7,10 +7,10 @@
 
 import Foundation
 
-enum Importance: String, CaseIterable, Identifiable {
-    case unimportant = "↓"
-    case common = "нет"
-    case important = "‼️"
+enum Importance: String, CaseIterable, Identifiable, Codable {
+    case low = "low"
+    case basic = "basic"
+    case important = "important"
     
     var id: String { self.rawValue }
 }

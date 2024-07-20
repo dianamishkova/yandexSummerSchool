@@ -58,7 +58,7 @@ struct ColorPicker: View {
                 dismiss()
             },
             trailing: Button("Сохранить") {
-                todoItem.colorHex = selectedColor
+                todoItem.color = selectedColor.toHex()
                 viewModel.addItem(todoItem)
                 dismiss()
             }
@@ -86,8 +86,8 @@ struct ColorPicker: View {
             id: "1",
             text: "Купить что-то",
             importance: .important,
-            completed: false,
-            creationDate: Date(timeIntervalSince1970: 1_822_548_800)
+            done: false,
+            createdAt: 1_822_548_800, lastUpdatedBy: "???"
         )
     )
         .environmentObject(ViewModel())

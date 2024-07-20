@@ -8,6 +8,8 @@ struct MainView: View {
     @State var showTaskView = false
     @State private var showCompleted = true
     @State private var showCalendar = false
+    @State private var addChosen = false
+    let networking = DefaultNetworkingService()
     var body: some View {
         NavigationStack {
             VStack {
@@ -27,7 +29,7 @@ struct MainView: View {
                 .padding(.horizontal)
                 List {
                     ForEach(viewModel.todoItemsList) { todoItem in
-                        if showCompleted || !todoItem.completed {
+                        if showCompleted || !todoItem.done {     
                             TaskCellView(showTaskView: $showTaskView, todoItem: todoItem)
                         }
                     }
@@ -59,11 +61,12 @@ struct MainView: View {
                 TaskView(
                     todoItem: TodoItem(
                         text: "",
-                        importance: .common,
+                        importance: .basic,
                         deadline: nil,
-                        completed: false,
-                        creationDate: Date.now,
-                        editDate: Date.now
+                        done: false,
+                        createdAt: Int64(Date.now.timeIntervalSince1970),
+                        changedAt: Int64(Date.now.timeIntervalSince1970),
+                        lastUpdatedBy: ""
                     ),
                     showDate: false
                 )
@@ -71,7 +74,10 @@ struct MainView: View {
             .modifier(FormBackgroundModifier())
         }
         .onAppear {
-            viewModel.load()
+            viewModel.startTimer()
+        }
+        .onDisappear {
+            viewModel.stopTimer()
         }
     }
 }

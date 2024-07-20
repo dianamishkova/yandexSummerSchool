@@ -161,17 +161,17 @@ class CalendarViewController: UIViewController {
             }
             .store(in: &cancellables)
 
-        viewModel.$error
-            .receive(on: RunLoop.main)
-            .sink { error in
-                if let error {
-                    switch error {
-                    case .retrievingError(let errorMessage):
-                        print(errorMessage)
-                    }
-                }
-            }
-            .store(in: &cancellables)
+//        viewModel.$error
+//            .receive(on: RunLoop.main)
+//            .sink { error in
+//                if let error {
+//                    switch error {
+//                    case .retrievingError(let errorMessage):
+//                        print(errorMessage)
+//                    }
+//                }
+//            }
+//            .store(in: &cancellables)
     }
     
     private func setupFloatingButton() {
@@ -194,7 +194,7 @@ class CalendarViewController: UIViewController {
         
     @objc 
     private func floatingButtonTapped() {
-        let swiftUIView = TaskView(todoItem: TodoItem(text: ""), showDate: false).environmentObject(viewModel)
+        let swiftUIView = TaskView(todoItem: TodoItem(text: "", lastUpdatedBy: ""), showDate: false).environmentObject(viewModel)
         let hostingController = UIHostingController(rootView: swiftUIView)
         present(hostingController, animated: true, completion: nil)
         DDLogInfo("Navigated to TaskView")
