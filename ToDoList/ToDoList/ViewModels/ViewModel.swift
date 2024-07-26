@@ -10,6 +10,7 @@ import FileCachePackage
 import Foundation
 import Network
 
+
 @MainActor
 class ViewModel: ObservableObject {
     @Published private(set) var todoItemsList: [TodoItem] = []
@@ -200,7 +201,6 @@ class ViewModel: ObservableObject {
         } catch {
             todoItemsList = []
         }
-        DDLogInfo("Loaded from file")
     }
     
     func save() {

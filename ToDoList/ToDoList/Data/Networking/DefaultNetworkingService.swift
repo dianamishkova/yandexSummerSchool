@@ -56,7 +56,7 @@ struct DefaultNetworkingService: NetworkingService {
         }
         do {
             let (data, response) = try await URLSession.shared.dataTask(for: request)
-            guard let httpResponse = response as? HTTPURLResponse else {
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
                 completion(.failure(.invalidResponse))
                 return
             }

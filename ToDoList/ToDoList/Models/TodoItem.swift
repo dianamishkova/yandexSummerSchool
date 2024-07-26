@@ -50,5 +50,4 @@ struct TodoItem: Codable, Identifiable, CSVProtocol, JSONProtocol {
         case changedAt = "changed_at"
         case lastUpdatedBy = "last_updated_by"
     }
-    
 }

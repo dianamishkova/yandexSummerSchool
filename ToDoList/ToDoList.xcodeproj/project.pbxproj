@@ -33,8 +33,6 @@
 		E9A752BA2C262648007324A6 /* TodoItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A752B92C262648007324A6 /* TodoItemTests.swift */; };
 		E9A818532C2FA7CD008F1E2F /* FormBackgroundModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A818522C2FA7CD008F1E2F /* FormBackgroundModifier.swift */; };
 		E9A818552C2FABFA008F1E2F /* ColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9A818542C2FABFA008F1E2F /* ColorPicker.swift */; };
-		E9AF608F2C5268510089E3E8 /* FileCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AF608E2C5268510089E3E8 /* FileCache.swift */; };
-		E9AF60962C526D990089E3E8 /* ToDoItemEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9AF60952C526D990089E3E8 /* ToDoItemEntity.swift */; };
 		E9DCB0162C302BA7007385B4 /* ColorPaletteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9DCB0152C302BA7007385B4 /* ColorPaletteView.swift */; };
 		E9E91C522C41A08E009655E7 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9E91C512C41A08E009655E7 /* ViewModel.swift */; };
 		E9F291C72C4038750020AF0A /* TaskCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9F291C62C4038750020AF0A /* TaskCellView.swift */; };
@@ -101,8 +99,6 @@
 		E9A752B92C262648007324A6 /* TodoItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoItemTests.swift; sourceTree = "<group>"; };
 		E9A818522C2FA7CD008F1E2F /* FormBackgroundModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormBackgroundModifier.swift; sourceTree = "<group>"; };
 		E9A818542C2FABFA008F1E2F /* ColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPicker.swift; sourceTree = "<group>"; };
-		E9AF608E2C5268510089E3E8 /* FileCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileCache.swift; sourceTree = "<group>"; };
-		E9AF60952C526D990089E3E8 /* ToDoItemEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToDoItemEntity.swift; sourceTree = "<group>"; };
 		E9DCB0152C302BA7007385B4 /* ColorPaletteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPaletteView.swift; sourceTree = "<group>"; };
 		E9E91C512C41A08E009655E7 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		E9F291C62C4038750020AF0A /* TaskCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCellView.swift; sourceTree = "<group>"; };
@@ -193,7 +189,6 @@
 			isa = PBXGroup;
 			children = (
 				E9E91C512C41A08E009655E7 /* ViewModel.swift */,
-				E9AF608E2C5268510089E3E8 /* FileCache.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -304,7 +299,6 @@
 		E9A43F332C4808A30075A926 /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				E9AF60942C526D890089E3E8 /* Models */,
 				E9A43F342C4808B00075A926 /* Networking */,
 			);
 			path = Data;
@@ -317,14 +311,6 @@
 				E9A43F372C4808D40075A926 /* DefaultNetworkingService.swift */,
 			);
 			path = Networking;
-			sourceTree = "<group>";
-		};
-		E9AF60942C526D890089E3E8 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				E9AF60952C526D990089E3E8 /* ToDoItemEntity.swift */,
-			);
-			path = Models;
 			sourceTree = "<group>";
 		};
 		E9E7765F2C38D107002C4D0A /* CalendarView */ = {
@@ -570,7 +556,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E921B7B62C4B028A00233702 /* Responses.swift in Sources */,
-				E9AF60962C526D990089E3E8 /* ToDoItemEntity.swift in Sources */,
 				E9F291C92C403D430020AF0A /* URLSessionExtension.swift in Sources */,
 				E99DC7F82C37280400A85E05 /* CalendarViewController.swift in Sources */,
 				E9F291C72C4038750020AF0A /* TaskCellView.swift in Sources */,
@@ -588,7 +573,6 @@
 				E99DC7F42C36E66300A85E05 /* ToDoItemCell.swift in Sources */,
 				E9A818552C2FABFA008F1E2F /* ColorPicker.swift in Sources */,
 				E958394D2C38E5520094EA0D /* CalendarView.swift in Sources */,
-				E9AF608F2C5268510089E3E8 /* FileCache.swift in Sources */,
 				E92981472C2F160200129A50 /* TaskView.swift in Sources */,
 				E99DC7FA2C372E3300A85E05 /* SectionHeaderView.swift in Sources */,
 				E9DCB0162C302BA7007385B4 /* ColorPaletteView.swift in Sources */,
