@@ -1,15 +1,16 @@
 //
-//  TodoItem.swift
+//  ToDoItemEntity.swift
 //  ToDoList
 //
-//  Created by Диана Мишкова on 15.06.24.
+//  Created by Диана Мишкова on 25.07.24.
 //
-import FileCachePackage
-import Foundation
-import SwiftUI
 
-struct TodoItem: Codable, Identifiable, CSVProtocol, JSONProtocol {
-    let id: String
+import Foundation
+import SwiftData
+
+@Model
+final class TodoItemEntity: Identifiable {
+    @Attribute(.unique) let id: String
     var text: String
     var importance: Importance
     var deadline: Int64?
@@ -17,7 +18,7 @@ struct TodoItem: Codable, Identifiable, CSVProtocol, JSONProtocol {
     var color: String?
     let createdAt: Int64
     var changedAt: Int64
-    let lastUpdatedBy: String
+    var lastUpdatedBy: String
     
     init(id: String = UUID().uuidString,
          text: String,
@@ -38,17 +39,4 @@ struct TodoItem: Codable, Identifiable, CSVProtocol, JSONProtocol {
             self.color = color
             self.lastUpdatedBy = lastUpdatedBy
         }
-    
-    enum CodingKeys: String, CodingKey {
-        case id
-        case text
-        case importance
-        case deadline
-        case done
-        case color
-        case createdAt = "created_at"
-        case changedAt = "changed_at"
-        case lastUpdatedBy = "last_updated_by"
-    }
-    
 }
